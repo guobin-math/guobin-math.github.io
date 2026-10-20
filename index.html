@@ -453,8 +453,8 @@
 <footer>
   <p>
     © 2026 Bin Guo (郭彬) | 
-    <span data-en>Last updated: <span id="last-modified"></span></span>
-    <span data-zh>最后更新：<span id="last-modified"></span></span>
+    <span data-en>Last updated: <span class="last-modified"></span></span>
+    <span data-zh>最后更新：<span class="last-modified"></span></span>
   </p>
   <p>
     <a href="https://github.com/guobin-math/guobin-math.github.io" target="_blank">
@@ -479,6 +479,17 @@
     return navigator.language.toLowerCase().includes('zh') ? 'zh' : 'en';
   }
   
+  // 最后更新日期：随当前语言刷新两个页脚日期元素
+  function updateLastModified(lang) {
+    const date = new Date(document.lastModified);
+    const formattedDate = date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
+      year: 'numeric', month: 'short', day: 'numeric'
+    });
+    document.querySelectorAll('.last-modified').forEach(element => {
+      element.textContent = formattedDate;
+    });
+  }
+
   function applyLang(lang) {
     htmlEl.setAttribute('lang', lang);
     localStorage.setItem('preferred-lang', lang);
@@ -488,6 +499,7 @@
     } else if (titleEl.dataset.en) {
       titleEl.textContent = titleEl.dataset.en;
     }
+    updateLastModified(lang);
   }
   
   if (langToggle) {
@@ -499,16 +511,6 @@
   }
   
   applyLang(getPreferredLang());
-  
-  // 最后更新日期
-  const updateDateEl = document.getElementById('last-modified');
-  if (updateDateEl) {
-    const date = new Date(document.lastModified);
-    const lang = htmlEl.getAttribute('lang');
-    updateDateEl.textContent = date.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', {
-      year: 'numeric', month: 'short', day: 'numeric'
-    });
-  }
   
   // 平滑滚动 (可选)
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
